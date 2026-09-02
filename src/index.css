@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-heading: 'Cinzel', serif;
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: #2D2926;
+    background-color: #FDFCFB;
+  }
+
+  h1, h2, h3, .font-heading {
+    font-family: var(--font-heading);
+    letter-spacing: 0.02em;
+  }
+}
+
+/* Subtle Natural Tones archaeological strata / survey grid background utilities */
+.bg-topo-pattern {
+  background-image: radial-gradient(rgba(179, 90, 56, 0.09) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-natural-dots {
+  background-image: radial-gradient(rgba(45, 41, 38, 0.06) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+
+.bg-grid-subtle {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+}

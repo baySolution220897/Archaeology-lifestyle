@@ -1,0 +1,6 @@
+{
+  "name": "Archaeology Lifestyle | AL Global Community",
+  "description": "Connecting Archaeology to Communities, Connecting Heritage to the World. Official website of Archaeology Lifestyle (AL Global Community).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
