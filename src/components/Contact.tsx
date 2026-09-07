@@ -81,21 +81,38 @@ export const Contact: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Simulate real client dispatch network latency for the staged endpoint
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Note: Transparent message respecting prompt mandate:
-      // "Do not pretend that an email was sent if no backend exists. Structure the form so a backend/email service can easily be connected later."
-      setIsSubmitted(true);
-      setSubmissionFeedback({
-        type: 'success',
-        text: 'Message received and validated successfully.',
-        details: 'Thank you for reaching out to AL Global Community. Your inquiry has been prepared for transmission. Direct liaison inquiries can also be addressed to our organizational contact address.',
+      const response = await fetch('/api/contact/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName: formData.fullName.trim(),
+          email: formData.email.trim().toLowerCase(),
+          subject: formData.subject.trim(),
+          message: formData.message.trim(),
+        }),
       });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        setIsSubmitted(true);
+        setSubmissionFeedback({
+          type: 'success',
+          text: 'Thank you for contacting us. Your message has been received.',
+          details: 'Thank you for reaching out to AL Global Community. Your message has been securely received and recorded. Our team will review your inquiry shortly.',
+        });
+      } else {
+        setSubmissionFeedback({
+          type: 'error',
+          text: result.error || 'Unable to send your message right now. Please try again.',
+        });
+      }
     } catch {
       setSubmissionFeedback({
         type: 'error',
-        text: 'An error occurred while submitting your message. Please try again.',
+        text: 'Unable to send your message right now. Please try again.',
       });
     } finally {
       setIsLoading(false);

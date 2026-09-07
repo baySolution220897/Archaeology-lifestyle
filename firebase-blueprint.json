@@ -1,0 +1,98 @@
+{
+  "entities": {
+    "Subscriber": {
+      "title": "Subscriber",
+      "description": "Newsletter subscriber entry for Archaeology Lifestyle / AL Global Community",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Unique subscriber email address normalized to lowercase",
+          "maxLength": 254
+        },
+        "subscribedAt": {
+          "type": "string",
+          "description": "Server timestamp of when the user subscribed"
+        },
+        "status": {
+          "type": "string",
+          "description": "Subscription status",
+          "enum": ["active", "unsubscribed"]
+        }
+      },
+      "required": ["email", "subscribedAt", "status"]
+    },
+    "ContactSubmission": {
+      "title": "ContactSubmission",
+      "description": "Inquiry submitted through the AL Global Community Contact Us form",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the sender",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Contact email address of the sender",
+          "maxLength": 254
+        },
+        "subject": {
+          "type": "string",
+          "description": "Subject title of the contact inquiry",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "message": {
+          "type": "string",
+          "description": "Full message content of the inquiry",
+          "minLength": 1,
+          "maxLength": 10000
+        },
+        "submittedAt": {
+          "type": "string",
+          "description": "Server timestamp of when the inquiry was submitted"
+        }
+      },
+      "required": ["name", "email", "subject", "message", "submittedAt"]
+    },
+    "Mail": {
+      "title": "Mail",
+      "description": "Queued email document for Firebase Trigger Email extension",
+      "type": "object",
+      "properties": {
+        "to": {
+          "type": "string",
+          "description": "Recipient email address",
+          "format": "email"
+        },
+        "message": {
+          "type": "object",
+          "description": "Email content payload containing subject, text, and html"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when queued"
+        }
+      },
+      "required": ["to", "message"]
+    }
+  },
+  "firestore": {
+    "/subscribers/{subscriberId}": {
+      "schema": "Subscriber",
+      "description": "Collection of verified newsletter subscribers"
+    },
+    "/contact_submissions/{submissionId}": {
+      "schema": "ContactSubmission",
+      "description": "Collection of incoming contact form inquiries"
+    },
+    "/mail/{mailId}": {
+      "schema": "Mail",
+      "description": "Collection for Firebase Trigger Email extension"
+    }
+  }
+}

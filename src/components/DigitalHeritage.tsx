@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Database, BookOpen, Layers, Mic, Globe2, Sparkles, X, Info, ShieldAlert } from 'lucide-react';
-import digitalScanImage from '../assets/images/digital_heritage_scan_1788368042650.jpg';
+import photoWA0047 from '../assets/images/IMG-20260905-WA0047.jpg';
 
 export const DigitalHeritage: React.FC = () => {
   const [showComingSoon, setShowComingSoon] = useState(false);
@@ -73,8 +73,8 @@ export const DigitalHeritage: React.FC = () => {
               {/* Image Frame */}
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img
-                  src={digitalScanImage}
-                  alt="3D digital archaeological point cloud artifact scan with spatial site coordinates"
+                  src={photoWA0047}
+                  alt="Archaeological research symposium presentation and academic heritage preservation cohort"
                   className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-700 opacity-90"
                   referrerPolicy="no-referrer"
                   loading="lazy"

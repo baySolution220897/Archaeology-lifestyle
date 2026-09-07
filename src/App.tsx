@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { About } from './components/About';
@@ -16,8 +16,24 @@ import { FAQ } from './components/FAQ';
 import { StayConnected } from './components/StayConnected';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
+import { FadeInSection } from './components/FadeInSection';
 
 export default function App() {
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalScroll > 0) {
+        const currentProgress = (window.scrollY / totalScroll) * 100;
+        setScrollProgress(Math.min(100, Math.max(0, currentProgress)));
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const scrollToSection = useCallback((sectionId: string) => {
     if (sectionId === 'home') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -38,35 +54,64 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FDFCFB] text-[#2D2926] selection:bg-[#B35A38] selection:text-white">
+      {/* Scroll Progress Bar at the top of the viewport */}
+      <div
+        className="fixed top-0 left-0 right-0 h-[3px] bg-transparent z-[70] pointer-events-none"
+        aria-hidden="true"
+      >
+        <div
+          className="h-full bg-gradient-to-r from-[#B35A38] via-[#C5A059] to-[#B35A38] transition-[width] duration-150 ease-out"
+          style={{ width: `${scrollProgress}%` }}
+        />
+      </div>
+
       {/* Sticky Navigation */}
       <Navbar onNavigate={scrollToSection} />
 
-      {/* Main Content Sections */}
+      {/* Main Content Sections with Intersection-Observer Scroll Reveals */}
       <main className="flex-1">
         <Hero
           onExplore={() => scrollToSection('about')}
           onContact={() => scrollToSection('contact')}
         />
 
-        <About
-          onLearnMore={() => scrollToSection('past-events')}
-        />
+        <FadeInSection direction="up" threshold={0.06} duration={850}>
+          <About
+            onLearnMore={() => scrollToSection('past-events')}
+          />
+        </FadeInSection>
 
-        <PastEvents />
+        <FadeInSection direction="up" threshold={0.06} duration={850}>
+          <PastEvents />
+        </FadeInSection>
 
-        <WhatWeDo />
+        <FadeInSection direction="up" threshold={0.06} duration={850}>
+          <WhatWeDo />
+        </FadeInSection>
 
-        <OurValues />
+        <FadeInSection direction="up" threshold={0.06} duration={850}>
+          <OurValues />
+        </FadeInSection>
 
-        <DigitalHeritage />
+        <FadeInSection direction="up" threshold={0.06} duration={850}>
+          <DigitalHeritage />
+        </FadeInSection>
 
-        <WhatMakesUsDifferent />
+        <FadeInSection direction="up" threshold={0.06} duration={850}>
+          <WhatMakesUsDifferent />
+        </FadeInSection>
 
-        <FAQ />
+        <FadeInSection direction="up" threshold={0.06} duration={850}>
+          <FAQ />
+        </FadeInSection>
 
-        <StayConnected />
+        <FadeInSection direction="up" threshold={0.06} duration={850}>
+          <StayConnected />
+        </FadeInSection>
 
-        <Contact />
+        <FadeInSection direction="up" threshold={0.06} duration={850}>
+          <Contact />
+        </FadeInSection>
       </main>
 
       {/* Minimal Footer */}

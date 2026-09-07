@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowDown, Compass, Send, ChevronLeft, ChevronRight } from 'lucide-react';
-import heroImg1 from '../assets/images/african_archaeology_hero_1788368024941.jpg';
-import heroImg2 from '../assets/images/hero_fieldwork_team_1788369084225.jpg';
-import heroImg3 from '../assets/images/hero_ancient_earthworks_1788369103169.jpg';
-import heroImg4 from '../assets/images/hero_artifact_scanning_1788369118062.jpg';
-import heroImg5 from '../assets/images/hero_community_gathering_1788369132416.jpg';
+import photoWA0052 from '../assets/images/IMG-20260905-WA0052.jpg';
+import photoWA0050 from '../assets/images/IMG-20260905-WA0050.jpg';
+import photoWA0051 from '../assets/images/IMG-20260905-WA0051.jpg';
+import photoWA0054 from '../assets/images/IMG-20260905-WA0054.jpg';
+import photoWA0053 from '../assets/images/IMG-20260905-WA0053.jpg';
 
 interface HeroProps {
   onExplore: () => void;
@@ -13,29 +13,29 @@ interface HeroProps {
 
 const HERO_SLIDES = [
   {
-    image: heroImg1,
-    alt: 'African archaeological excavation landscape with historical stone masonry and stratigraphy',
-    tag: 'Historical Excavations & Masonry',
+    image: photoWA0052,
+    alt: 'The Oyo Empire Archaeology and Heritage Project (Ede-Ile) - field documentation and recording',
+    tag: 'Oyo Empire Project • Field Documentation',
   },
   {
-    image: heroImg2,
-    alt: 'West African archaeologists and local community researchers documenting excavation stratigraphy',
-    tag: 'Collaborative Community Fieldwork',
+    image: photoWA0050,
+    alt: 'Osun Lugbadebo / Oloio stratigraphic excavation units with archaeologists and community researchers',
+    tag: 'Osun Lugbadebo • Stratigraphic Excavations',
   },
   {
-    image: heroImg3,
-    alt: 'Panoramic scenic view of ancient African heritage earthworks and archaeological excavation trench',
-    tag: 'Ancient Earthworks & Landscapes',
+    image: photoWA0051,
+    alt: 'Panoramic scenic view of ancient African heritage landscape and rocky inselberg survey',
+    tag: 'Ancient Landscapes & Inselberg Surveys',
   },
   {
-    image: heroImg4,
-    alt: 'High-tech 3D laser photogrammetry and artifact scanning in digital archaeological laboratory',
-    tag: 'Digital 3D Heritage & Photogrammetry',
+    image: photoWA0054,
+    alt: 'Archaeological fieldwork team resting during landscape survey beneath ancient trees',
+    tag: 'Field Camp & Interdisciplinary Exchange',
   },
   {
-    image: heroImg5,
-    alt: 'Outdoor community gathering of West African heritage custodians and young archaeology students',
-    tag: 'Descendant Heritage & Oral Traditions',
+    image: photoWA0053,
+    alt: 'The Oyo Empire Archaeology and Heritage Project team gathered at ancient sacred baobab tree',
+    tag: 'The Oyo Empire Project • Sacred Groves & Communities',
   },
 ];
 

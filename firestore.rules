@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-\\.\\@]+$');
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.size() >= 5 && email.size() <= 254 && email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$');
+    }
+
+    // Validation for contact submissions
+    function isValidContactSubmission(data) {
+      return data.keys().hasAll(['name', 'email', 'subject', 'message', 'submittedAt']) &&
+        data.keys().size() == 5 &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 200 &&
+        isValidEmail(data.email) &&
+        data.subject is string && data.subject.size() >= 1 && data.subject.size() <= 300 &&
+        data.message is string && data.message.size() >= 1 && data.message.size() <= 10000 &&
+        data.submittedAt == request.time;
+    }
+
+    // Validation for newsletter subscribers
+    function isValidSubscriber(data) {
+      return data.keys().hasAll(['email', 'subscribedAt', 'status']) &&
+        data.keys().size() == 3 &&
+        isValidEmail(data.email) &&
+        data.status == 'active' &&
+        data.subscribedAt == request.time;
+    }
+
+    // Contact Submissions collection:
+    // Visitors may submit a contact form with strict validation.
+    // Read, update, delete, and list operations are strictly denied to protect user privacy.
+    match /contact_submissions/{submissionId} {
+      allow create: if isValidId(submissionId) && isValidContactSubmission(incoming());
+      allow read, update, delete: if false;
+    }
+
+    // Subscribers collection:
+    // Direct creates must match exact schema.
+    // Querying/listing the entire collection is strictly forbidden (allow list: if false).
+    // Getting a single document by specific ID is permitted for duplicate existence check.
+    // Updates and deletes are strictly denied to visitors.
+    match /subscribers/{subscriberId} {
+      allow get: if isValidId(subscriberId);
+      allow list: if false;
+      allow create: if isValidId(subscriberId) && isValidSubscriber(incoming());
+      allow update, delete: if false;
+    }
+
+    // Mail queue collection for Firebase Trigger Email extension:
+    // Only backend processes may read/write mail objects.
+    match /mail/{mailId} {
+      allow read, write: if false;
+    }
+  }
+}

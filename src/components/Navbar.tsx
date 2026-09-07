@@ -8,6 +8,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,11 +23,50 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // IntersectionObserver to detect active section in viewport
+  useEffect(() => {
+    const sectionIds = ['home', 'about', 'past-events', 'what-we-do', 'stay-connected', 'faq', 'contact'];
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        rootMargin: '-20% 0px -55% 0px',
+        threshold: 0.1,
+      }
+    );
+
+    sectionIds.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   const handleLinkClick = (e: React.MouseEvent, sectionId: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
+    setActiveSection(sectionId);
     onNavigate(sectionId);
   };
+
+  const navLinks = [
+    { id: 'home', label: 'HOME' },
+    { id: 'about', label: 'ABOUT US' },
+    { id: 'past-events', label: 'PAST EVENTS' },
+    { id: 'what-we-do', label: 'WHAT WE DO' },
+    { id: 'stay-connected', label: 'STAY CONNECTED' },
+    { id: 'faq', label: 'FAQ' },
+    { id: 'contact', label: 'CONTACT' },
+  ];
 
   return (
     <header
@@ -63,69 +103,34 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
 
         {/* Desktop Nav Links */}
         <nav className="hidden lg:flex items-center gap-7" aria-label="Main Navigation">
-          <a
-            href="#home"
-            onClick={(e) => handleLinkClick(e, 'home')}
-            className={`text-xs font-semibold tracking-[0.16em] transition-colors uppercase focus:outline-none focus:ring-1 focus:ring-[#B35A38] ${
-              isScrolled ? 'text-[#2D2926] hover:text-[#B35A38]' : 'text-white/90 hover:text-[#E8C4A2]'
-            }`}
-          >
-            HOME
-          </a>
-          <a
-            href="#about"
-            onClick={(e) => handleLinkClick(e, 'about')}
-            className={`text-xs font-semibold tracking-[0.16em] transition-colors uppercase focus:outline-none focus:ring-1 focus:ring-[#B35A38] ${
-              isScrolled ? 'text-[#2D2926] hover:text-[#B35A38]' : 'text-white/90 hover:text-[#E8C4A2]'
-            }`}
-          >
-            ABOUT US
-          </a>
-          <a
-            href="#past-events"
-            onClick={(e) => handleLinkClick(e, 'past-events')}
-            className={`text-xs font-semibold tracking-[0.16em] transition-colors uppercase focus:outline-none focus:ring-1 focus:ring-[#B35A38] ${
-              isScrolled ? 'text-[#2D2926] hover:text-[#B35A38]' : 'text-white/90 hover:text-[#E8C4A2]'
-            }`}
-          >
-            PAST EVENTS
-          </a>
-          <a
-            href="#what-we-do"
-            onClick={(e) => handleLinkClick(e, 'what-we-do')}
-            className={`text-xs font-semibold tracking-[0.16em] transition-colors uppercase focus:outline-none focus:ring-1 focus:ring-[#B35A38] ${
-              isScrolled ? 'text-[#2D2926] hover:text-[#B35A38]' : 'text-white/90 hover:text-[#E8C4A2]'
-            }`}
-          >
-            WHAT WE DO
-          </a>
-          <a
-            href="#stay-connected"
-            onClick={(e) => handleLinkClick(e, 'stay-connected')}
-            className={`text-xs font-semibold tracking-[0.16em] transition-colors uppercase focus:outline-none focus:ring-1 focus:ring-[#B35A38] ${
-              isScrolled ? 'text-[#2D2926] hover:text-[#B35A38]' : 'text-white/90 hover:text-[#E8C4A2]'
-            }`}
-          >
-            STAY CONNECTED
-          </a>
-          <a
-            href="#faq"
-            onClick={(e) => handleLinkClick(e, 'faq')}
-            className={`text-xs font-semibold tracking-[0.16em] transition-colors uppercase focus:outline-none focus:ring-1 focus:ring-[#B35A38] ${
-              isScrolled ? 'text-[#2D2926] hover:text-[#B35A38]' : 'text-white/90 hover:text-[#E8C4A2]'
-            }`}
-          >
-            FAQ
-          </a>
-          <a
-            href="#contact"
-            onClick={(e) => handleLinkClick(e, 'contact')}
-            className={`text-xs font-semibold tracking-[0.16em] transition-colors uppercase focus:outline-none focus:ring-1 focus:ring-[#B35A38] ${
-              isScrolled ? 'text-[#2D2926] hover:text-[#B35A38]' : 'text-white/90 hover:text-[#E8C4A2]'
-            }`}
-          >
-            CONTACT
-          </a>
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.id;
+            return (
+              <a
+                key={link.id}
+                href={`#${link.id}`}
+                onClick={(e) => handleLinkClick(e, link.id)}
+                className={`relative py-1 text-xs font-semibold tracking-[0.16em] transition-all uppercase focus:outline-none focus:ring-1 focus:ring-[#B35A38] ${
+                  isActive
+                    ? isScrolled
+                      ? 'text-[#B35A38] font-bold'
+                      : 'text-[#E8C4A2] font-bold'
+                    : isScrolled
+                    ? 'text-[#2D2926] hover:text-[#B35A38]'
+                    : 'text-white/90 hover:text-[#E8C4A2]'
+                }`}
+              >
+                <span>{link.label}</span>
+                {isActive && (
+                  <span
+                    className={`absolute bottom-0 left-0 right-0 h-[2px] rounded-full transition-all ${
+                      isScrolled ? 'bg-[#B35A38]' : 'bg-[#E8C4A2]'
+                    }`}
+                  />
+                )}
+              </a>
+            );
+          })}
         </nav>
 
         {/* Right CTA Button */}
@@ -162,56 +167,27 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-[#FDFCFB] border-b border-stone-200 px-6 py-6 transition-all shadow-md">
-          <nav className="flex flex-col gap-3" aria-label="Mobile Navigation">
-            <a
-              href="#home"
-              onClick={(e) => handleLinkClick(e, 'home')}
-              className="text-xs font-semibold tracking-[0.16em] text-[#2D2926] hover:text-[#B35A38] py-2 border-b border-stone-200 uppercase"
-            >
-              HOME
-            </a>
-            <a
-              href="#about"
-              onClick={(e) => handleLinkClick(e, 'about')}
-              className="text-xs font-semibold tracking-[0.16em] text-[#2D2926] hover:text-[#B35A38] py-2 border-b border-stone-200 uppercase"
-            >
-              ABOUT US
-            </a>
-            <a
-              href="#past-events"
-              onClick={(e) => handleLinkClick(e, 'past-events')}
-              className="text-xs font-semibold tracking-[0.16em] text-[#2D2926] hover:text-[#B35A38] py-2 border-b border-stone-200 uppercase"
-            >
-              PAST EVENTS
-            </a>
-            <a
-              href="#what-we-do"
-              onClick={(e) => handleLinkClick(e, 'what-we-do')}
-              className="text-xs font-semibold tracking-[0.16em] text-[#2D2926] hover:text-[#B35A38] py-2 border-b border-stone-200 uppercase"
-            >
-              WHAT WE DO
-            </a>
-            <a
-              href="#stay-connected"
-              onClick={(e) => handleLinkClick(e, 'stay-connected')}
-              className="text-xs font-semibold tracking-[0.16em] text-[#2D2926] hover:text-[#B35A38] py-2 border-b border-stone-200 uppercase"
-            >
-              STAY CONNECTED
-            </a>
-            <a
-              href="#faq"
-              onClick={(e) => handleLinkClick(e, 'faq')}
-              className="text-xs font-semibold tracking-[0.16em] text-[#2D2926] hover:text-[#B35A38] py-2 border-b border-stone-200 uppercase"
-            >
-              FAQ
-            </a>
-            <a
-              href="#contact"
-              onClick={(e) => handleLinkClick(e, 'contact')}
-              className="text-xs font-semibold tracking-[0.16em] text-[#2D2926] hover:text-[#B35A38] py-2 border-b border-stone-200 uppercase"
-            >
-              CONTACT
-            </a>
+          <nav className="flex flex-col gap-1" aria-label="Mobile Navigation">
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.id;
+              return (
+                <a
+                  key={link.id}
+                  href={`#${link.id}`}
+                  onClick={(e) => handleLinkClick(e, link.id)}
+                  className={`text-xs font-semibold tracking-[0.16em] py-2.5 px-2 border-b border-stone-100 uppercase transition-all rounded-xs flex items-center justify-between ${
+                    isActive
+                      ? 'text-[#B35A38] bg-[#B35A38]/5 font-bold'
+                      : 'text-[#2D2926] hover:text-[#B35A38] hover:bg-stone-50'
+                  }`}
+                >
+                  <span>{link.label}</span>
+                  {isActive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#B35A38]" />
+                  )}
+                </a>
+              );
+            })}
 
             <div className="pt-2">
               <button

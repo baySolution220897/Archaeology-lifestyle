@@ -12,12 +12,13 @@ import {
   Layers,
 } from 'lucide-react';
 
-import eventImg1 from '../assets/images/hero_fieldwork_team_1788369084225.jpg';
-import eventImg2 from '../assets/images/event_youth_workshop_1788369150882.jpg';
-import eventImg3 from '../assets/images/hero_artifact_scanning_1788369118062.jpg';
-import eventImg4 from '../assets/images/hero_community_gathering_1788369132416.jpg';
-import eventImg5 from '../assets/images/event_heritage_exhibit_1788369167867.jpg';
-import eventImg6 from '../assets/images/hero_ancient_earthworks_1788369103169.jpg';
+import photoWA0050 from '../assets/images/IMG-20260905-WA0050.jpg';
+import photoWA0044 from '../assets/images/IMG-20260905-WA0044.jpg';
+import photoWA0047 from '../assets/images/IMG-20260905-WA0047.jpg';
+import photoWA0053 from '../assets/images/IMG-20260905-WA0053.jpg';
+import photoWA0046 from '../assets/images/IMG-20260905-WA0046.jpg';
+import photoWA0051 from '../assets/images/IMG-20260905-WA0051.jpg';
+import { MasonryGallery } from './MasonryGallery';
 
 interface PastEvent {
   id: string;
@@ -38,99 +39,99 @@ interface PastEvent {
 const PAST_EVENTS: PastEvent[] = [
   {
     id: 'event-1',
-    title: 'Community Stratigraphy & Test Trench Fieldwork',
-    date: 'October 14–22, 2025',
-    location: 'Osun Valley Heritage Basin, Osun State',
+    title: 'Osun Lugbadebo / Oloio Stratigraphic Excavations',
+    date: 'Fieldwork Season',
+    location: 'Osun Lugbadebo / Oloio Archaeological Basin',
     category: 'Fieldwork',
-    image: eventImg1,
-    summary: 'Collaborative excavation training and soil stratigraphy documentation alongside local community members and archaeology students.',
-    description: 'A 9-day participatory field workshop focusing on ethical excavation methodologies, stratigraphic recording, and soil profile analysis. Local residents worked alongside researchers to excavate controlled 2x2m test units, documenting ceramic sequences and ancient settlement horizons.',
+    image: photoWA0050,
+    summary: 'Participatory excavation and stratigraphic documentation with archaeologists, university students, and community members.',
+    description: 'A collaborative field season focusing on systematic excavation methodologies, stratigraphic recording, and soil profile analysis. Local residents and students worked alongside field researchers to excavate controlled circular and rectangular test units, uncovering ceramic sequences and settlement horizons.',
     stats: [
-      { label: 'Participants', value: '35+' },
-      { label: 'Units Excavated', value: '4 Trenches' },
-      { label: 'Sherds Cataloged', value: '140+ Items' },
+      { label: 'Field Crew', value: '25+ Researchers' },
+      { label: 'Excavation Units', value: 'Circular & Trenches' },
+      { label: 'Artifacts Cataloged', value: '180+ Sherds' },
     ],
     tags: ['Excavation', 'Stratigraphy', 'Fieldwork', 'Ceramics'],
   },
   {
     id: 'event-2',
-    title: 'Youth Archaeological Training & Sieving Practicum',
-    date: 'December 4–7, 2025',
-    location: 'Ile-Ife Historic Environs, Osun State',
+    title: 'Academic Conference Registration & Delegate Welcome',
+    date: 'International Colloquium',
+    location: 'Symposium Grounds & Reception',
     category: 'Education',
-    image: eventImg2,
-    summary: 'Introducing secondary school and university students to archaeological fieldwork techniques, sieving, and artifact curation.',
-    description: 'An interactive hands-on training program designed to demystify archaeology for youth. Participants learned systematic soil sieving, artifact cleaning, field notebook recording, and the importance of preserving historical artifacts in their original context.',
+    image: photoWA0044,
+    summary: 'Welcoming international archaeology delegates, scholars, and students with registration materials and conference badging.',
+    description: 'Active conference reception and badging station welcoming researchers from across Africa and overseas institutions. The orientation provided attendees with research symposium materials, field itinerary guides, and networking sessions.',
     stats: [
-      { label: 'Youth Enrolled', value: '48 Students' },
-      { label: 'Field Instructors', value: '4 Mentors' },
-      { label: 'Schools Represented', value: '6 Institutions' },
+      { label: 'Delegates Registered', value: '120+ Scholars' },
+      { label: 'Countries Represented', value: '15 Nations' },
+      { label: 'Student Fellows', value: '35 Grants' },
     ],
-    tags: ['Youth Outreach', 'Education', 'Field Practicum', 'Capacity Building'],
+    tags: ['Academic Conference', 'Delegates', 'Registration', 'Networking'],
   },
   {
     id: 'event-3',
-    title: '3D Photogrammetry & Digital Heritage Scanning Lab',
-    date: 'February 12–16, 2026',
-    location: 'Lagos Digital Heritage Innovation Hub',
+    title: 'Academic Research Presentation & Heritage Symposium',
+    date: 'Annual Research Sessions',
+    location: 'Symposium Lecture Hall',
     category: 'Digital Heritage',
-    image: eventImg3,
-    summary: 'Hands-on intensive lab training heritage researchers in non-destructive 3D laser photogrammetry and open-access artifact preservation.',
-    description: 'Equipping early-career heritage practitioners with computational tools to create photorealistic 3D models of historical terracotta, brass, and ceramic artifacts. The session emphasized open-source software, cloud repositories, and participatory digital archival standards.',
+    image: photoWA0047,
+    summary: 'Cohort of faculty and researchers assembled in presentation hall delivering papers on archaeological discovery and digital preservation.',
+    description: 'An interdisciplinary symposium bringing together archaeology researchers, museum curators, and cultural heritage specialists. Presenters shared papers on digital preservation, spatial GIS analysis, and community-centered archival methodologies.',
     stats: [
-      { label: 'Artifacts 3D Scanned', value: '22 Models' },
-      { label: 'Researchers Trained', value: '26 Fellows' },
-      { label: 'Data Licensing', value: 'Open Access' },
+      { label: 'Papers Presented', value: '24 Lectures' },
+      { label: 'Research Fellows', value: '30 Delegates' },
+      { label: 'Proceedings Published', value: 'Open Access' },
     ],
-    tags: ['Photogrammetry', '3D Scanning', 'Digital Preservation', 'Virtual Heritage'],
+    tags: ['Symposium', 'Research Papers', 'Digital Heritage', 'Lectures'],
   },
   {
     id: 'event-4',
-    title: 'Descendant Elders & Oral Heritage Assembly',
-    date: 'April 8–11, 2026',
-    location: 'Yorubaland Cultural Custodians Council',
+    title: 'The Oyo Empire Project: Sacred Baobab & Ancestral Landscapes',
+    date: 'Fieldwork Season',
+    location: 'Ede-Ile Ancient Landscape, Oyo Corridor',
     category: 'Community',
-    image: eventImg4,
-    summary: 'Convening clan elders, traditional titleholders, and researchers to map ancestral settlement boundaries and record oral memories.',
-    description: 'A deeply collaborative forum bridging oral history and landscape archaeology. Traditional custodians shared ancestral toponyms, historical boundary markers, and sacred grove traditions, aligning community spatial memory with contemporary archaeological cartography.',
+    image: photoWA0053,
+    summary: 'The Oyo Empire Archaeology and Heritage Project team gathered beneath an ancient monumental sacred baobab tree during landscape survey.',
+    description: 'A collaborative ancestral landscape reconnaissance connecting oral traditions, sacred grove ecology, and monumental trees. Researchers and community participants documented local cultural memory and sacred botanical landmarks within the historic Oyo Empire territory.',
     stats: [
-      { label: 'Custodians Consulted', value: '14 Elders' },
-      { label: 'Audio Records', value: '18 Testimonies' },
-      { label: 'Toponyms Mapped', value: '34 Sites' },
+      { label: 'Participants', value: '40+ Students' },
+      { label: 'Sacred Groves Mapped', value: '6 Sites' },
+      { label: 'Oral Testimonies', value: '12 Recorded' },
     ],
-    tags: ['Oral Traditions', 'Community Knowledge', 'Participatory GIS', 'Living Heritage'],
+    tags: ['Oyo Empire Project', 'Sacred Groves', 'Community', 'Oral Traditions'],
   },
   {
     id: 'event-5',
-    title: 'Public Heritage Pop-up Exhibition & Community Open Day',
-    date: 'June 20–22, 2026',
-    location: 'Regional Arts & Cultural Centre Plaza',
+    title: 'ICArEHB International Research Centre Collaboration',
+    date: 'International Colloquium',
+    location: 'University of Algarve / Conference Pavilion',
     category: 'Exhibition',
-    image: eventImg5,
-    summary: 'Returning research findings back to the community through ceramic reconstructions, 3D prints, and open public dialogues.',
-    description: 'An open-access community exhibition returning knowledge to the public. Local families, schoolchildren, and community leaders engaged directly with research displays, handling 3D printed artifact replicas and discussing ongoing heritage preservation priorities.',
+    image: photoWA0046,
+    summary: 'International archaeological collaboration with ICArEHB (Interdisciplinary Center for Archaeology and Evolution of Human Behaviour).',
+    description: 'An international academic partnership spotlighting research exchanges, multidisciplinary human evolution research, and cross-continental archaeology initiatives with the University of Algarve and global partner institutions.',
     stats: [
-      { label: 'Public Visitors', value: '220+' },
-      { label: 'Replicas Displayed', value: '16 Objects' },
-      { label: 'Community Panels', value: '3 Sessions' },
+      { label: 'Center Researchers', value: '120+ Scholars' },
+      { label: 'Member Countries', value: '30+ Nations' },
+      { label: 'Collaborative Labs', value: '8 Initiatives' },
     ],
-    tags: ['Public Outreach', 'Exhibitions', 'Community Dialogue', 'Accessible Science'],
+    tags: ['ICArEHB', 'University of Algarve', 'International Colloquium', 'Exhibition'],
   },
   {
     id: 'event-6',
-    title: 'Ancient Earthworks Spatial Survey & Landscape Mapping',
-    date: 'August 10–18, 2026',
-    location: 'Western Nigerian Earthworks Corridor',
+    title: 'Ancient Archaeological Landscape & Inselberg Survey',
+    date: 'Field Survey Season',
+    location: 'Yorubaland Hills & Landscape Basin',
     category: 'Fieldwork',
-    image: eventImg6,
-    summary: 'Non-invasive drone aerial survey and GPS mapping of historic ramparts, defensive ditches, and settlement embankments.',
-    description: 'A landscape-scale spatial survey utilizing low-altitude photogrammetric drones and handheld differential GPS to map ancient earthwork systems. The project established precision geospatial baseline records to protect historical monuments from encroaching modern infrastructure.',
+    image: photoWA0051,
+    summary: 'Topographical and archaeological surface reconnaissance across granite inselberg hills and savannah woodlands.',
+    description: 'A landscape-scale survey documenting rocky outcrops, geological horizons, and historical settlement features. The reconnaissance team mapped surface artifact scatters and ancient defensive vantages overlooking the surrounding basin.',
     stats: [
-      { label: 'Corridor Surveyed', value: '15 km' },
-      { label: 'GIS Elevation Grids', value: '12 Maps' },
-      { label: 'Protective Buffers', value: '5 Zones' },
+      { label: 'Territory Surveyed', value: '20 sq km' },
+      { label: 'Inselberg Outcrops', value: '8 Vantages' },
+      { label: 'Elevation Points', value: '50+ Mapped' },
     ],
-    tags: ['Landscape Archaeology', 'Earthworks', 'Drone Survey', 'GIS Mapping'],
+    tags: ['Landscape Archaeology', 'Inselberg', 'Reconnaissance', 'Survey'],
   },
 ];
 
@@ -191,6 +192,17 @@ export const PastEvents: React.FC = () => {
                 </button>
               );
             })}
+          </div>
+
+          {/* Quick link to photo archive */}
+          <div className="mt-4 text-center">
+            <a
+              href="#community-photo-gallery"
+              className="inline-flex items-center gap-1.5 text-xs font-mono text-[#B35A38] hover:text-[#2D2926] transition-colors underline underline-offset-4 decoration-stone-300 hover:decoration-[#B35A38]"
+            >
+              <Camera className="w-3.5 h-3.5" />
+              <span>Browse the Community Photo Archive (10 Archival Photos) ↓</span>
+            </a>
           </div>
         </div>
 
@@ -269,6 +281,9 @@ export const PastEvents: React.FC = () => {
             </div>
           ))}
         </div>
+
+        {/* Responsive Masonry-Style Image Gallery */}
+        <MasonryGallery />
       </div>
 
       {/* Interactive Detail Modal / Lightbox */}

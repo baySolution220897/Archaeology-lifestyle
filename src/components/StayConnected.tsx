@@ -12,10 +12,11 @@ import {
   CheckCircle2,
   Bell,
   Send,
+  Loader2,
 } from 'lucide-react';
 
-import instaThumb from '../assets/images/event_youth_workshop_1788369150882.jpg';
-import youtubeThumb from '../assets/images/hero_community_gathering_1788369132416.jpg';
+import photoWA0044 from '../assets/images/IMG-20260905-WA0044.jpg';
+import photoWA0053 from '../assets/images/IMG-20260905-WA0053.jpg';
 
 interface SocialCard {
   id: string;
@@ -68,8 +69,8 @@ const SOCIAL_FEEDS: SocialCard[] = [
     timestamp: '1d ago',
     icon: Instagram,
     iconColor: 'text-[#E1306C]',
-    image: instaThumb,
-    content: 'Youth in Archaeology: Secondary and university students getting hands-on with trowels, sieves, and stratigraphy in our Ile-Ife open dig lab. Connecting people to tangible history! 📐🌍',
+    image: photoWA0044,
+    content: 'Conference & Colloquium Moments: Welcoming researchers, student fellows, and delegates at our international archaeology symposium welcome desk! 🌍📚',
     metrics: {
       likes: '512',
       comments: '43',
@@ -104,9 +105,9 @@ const SOCIAL_FEEDS: SocialCard[] = [
     timestamp: '1w ago',
     icon: Youtube,
     iconColor: 'text-[#FF0000]',
-    image: youtubeThumb,
+    image: photoWA0053,
     videoDuration: '18:42',
-    content: 'MINI-DOC: "Voices of Living Heritage: Elder Custodians, Sacred Earthworks, and Participatory Preservation in Yorubaland" [Full 4K Documentary]',
+    content: 'MINI-DOC: "The Oyo Empire Archaeology & Heritage Project: Sacred Baobabs and Ancestral Landscape Reconnaissance in Ede-Ile" [Full 4K Documentary]',
     metrics: {
       views: '2.4K',
       likes: '340',
@@ -152,16 +153,57 @@ const OFFICIAL_CHANNELS = [
 
 export const StayConnected: React.FC = () => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
-  const [newsletterStatus, setNewsletterStatus] = useState<'idle' | 'success'>('idle');
+  const [newsletterStatus, setNewsletterStatus] = useState<'idle' | 'loading' | 'success' | 'duplicate' | 'error'>('idle');
+  const [newsletterMessage, setNewsletterMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newsletterEmail.trim()) return;
-    setNewsletterStatus('success');
-    setNewsletterEmail('');
-    setTimeout(() => {
-      setNewsletterStatus('idle');
-    }, 4000);
+    const trimmed = newsletterEmail.trim();
+    const normalized = trimmed.toLowerCase();
+
+    // 1. Validate email address
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!normalized || !emailRegex.test(normalized)) {
+      setNewsletterStatus('error');
+      setNewsletterMessage('Please enter a valid email address.');
+      return;
+    }
+
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    setNewsletterStatus('loading');
+    setNewsletterMessage('');
+
+    try {
+      const res = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: normalized }),
+      });
+
+      const data = await res.json();
+
+      if (data.duplicate) {
+        setNewsletterStatus('duplicate');
+        setNewsletterMessage('You are already subscribed to our newsletter.');
+      } else if (res.ok && data.success) {
+        setNewsletterStatus('success');
+        setNewsletterMessage('Thank you for subscribing to AL Global Community.');
+        setNewsletterEmail('');
+      } else {
+        setNewsletterStatus('error');
+        setNewsletterMessage(data.error || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      setNewsletterStatus('error');
+      setNewsletterMessage('Something went wrong. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -368,21 +410,38 @@ export const StayConnected: React.FC = () => {
                   value={newsletterEmail}
                   onChange={(e) => setNewsletterEmail(e.target.value)}
                   placeholder="Enter email address"
-                  className="px-3.5 py-2.5 bg-white border border-stone-300 rounded-xs text-xs text-[#2D2926] placeholder-stone-400 focus:outline-none focus:border-[#B35A38] w-full sm:w-64"
+                  disabled={isSubmitting}
+                  className="px-3.5 py-2.5 bg-white border border-stone-300 rounded-xs text-xs text-[#2D2926] placeholder-stone-400 focus:outline-none focus:border-[#B35A38] w-full sm:w-64 disabled:opacity-60"
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2.5 bg-[#B35A38] hover:bg-[#9E4C2C] text-white text-xs font-bold tracking-wider uppercase rounded-xs transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer"
+                  disabled={isSubmitting}
+                  className="px-4 py-2.5 bg-[#B35A38] hover:bg-[#9E4C2C] text-white text-xs font-bold tracking-wider uppercase rounded-xs transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  <Send className="w-3 h-3" />
-                  <span>SUBSCRIBE</span>
+                  {isSubmitting ? (
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                  ) : (
+                    <Send className="w-3 h-3" />
+                  )}
+                  <span>{isSubmitting ? 'SUBSCRIBING...' : 'SUBSCRIBE'}</span>
                 </button>
               </form>
             </div>
 
-            {newsletterStatus === 'success' && (
-              <div className="mt-3 text-xs text-emerald-700 font-mono text-center">
-                ✓ Thank you! You have been added to the AL Global Community Field Dispatch list.
+            {newsletterStatus !== 'idle' && newsletterStatus !== 'loading' && (
+              <div
+                className={`mt-3 text-xs font-mono text-center transition-all ${
+                  newsletterStatus === 'success'
+                    ? 'text-emerald-700'
+                    : newsletterStatus === 'duplicate'
+                    ? 'text-amber-800'
+                    : 'text-red-600'
+                }`}
+              >
+                {newsletterStatus === 'success' && '✓ '}
+                {newsletterStatus === 'duplicate' && 'ℹ '}
+                {newsletterStatus === 'error' && '⚠ '}
+                {newsletterMessage}
               </div>
             )}
           </div>
