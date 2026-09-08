@@ -1,8 +1,6 @@
 import express, { Request, Response } from 'express';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import fs from 'fs';
-import { createServer as createViteServer } from 'vite';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import {
   getFirestore,
@@ -18,23 +16,36 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Lazy Firebase initialization to ensure server starts immediately and reliably
+let dbInstance: any = null;
 
-// Load Firebase Config
-let firebaseConfig: any = {};
-const configPath = path.resolve(__dirname, 'firebase-applet-config.json');
-if (fs.existsSync(configPath)) {
-  try {
-    firebaseConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-  } catch (err) {
-    console.error('Error reading firebase-applet-config.json:', err);
+function getDb() {
+  if (!dbInstance) {
+    let firebaseConfig: any = {};
+    const configPath = path.resolve(process.cwd(), 'firebase-applet-config.json');
+    if (fs.existsSync(configPath)) {
+      try {
+        firebaseConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      } catch (err) {
+        console.error('[Server] Error reading firebase-applet-config.json:', err);
+      }
+    }
+
+    if (!firebaseConfig.apiKey && process.env.FIREBASE_CONFIG) {
+      try {
+        firebaseConfig = JSON.parse(process.env.FIREBASE_CONFIG);
+      } catch (err) {
+        console.error('[Server] Error parsing FIREBASE_CONFIG env:', err);
+      }
+    }
+
+    const fbApp = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    dbInstance = firebaseConfig.firestoreDatabaseId
+      ? getFirestore(fbApp, firebaseConfig.firestoreDatabaseId)
+      : getFirestore(fbApp);
   }
+  return dbInstance;
 }
-
-// Initialize Firebase App & Firestore
-const fbApp = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const db = getFirestore(fbApp, firebaseConfig.firestoreDatabaseId);
 
 // Initialize optional direct SMTP Transporter if credentials are provided
 let emailTransporter: Transporter | null = null;
@@ -74,7 +85,6 @@ async function startServer() {
     res.json({
       status: 'ok',
       service: 'Archaeology Lifestyle | AL Global Community API',
-      firebaseConnected: !!firebaseConfig.projectId,
       timestamp: new Date().toISOString(),
     });
   });
@@ -112,7 +122,7 @@ async function startServer() {
 
       // Step 3: Check whether subscriber already exists using deterministic hex doc ID
       const subscriberDocId = Buffer.from(normalizedEmail).toString('hex');
-      const subscriberDocRef = doc(db, 'subscribers', subscriberDocId);
+      const subscriberDocRef = doc(getDb(), 'subscribers', subscriberDocId);
       const existingDocSnap = await getDoc(subscriberDocRef);
 
       if (existingDocSnap.exists()) {
@@ -227,7 +237,7 @@ Visit our community website: ${siteUrl}`;
       // A) Queue to Firestore 'mail' collection (Firebase Trigger Email extension standard)
       let welcomeEmailTriggered = false;
       try {
-        const mailRef = collection(db, 'mail');
+        const mailRef = collection(getDb(), 'mail');
         await addDoc(mailRef, {
           to: normalizedEmail,
           message: {
@@ -348,7 +358,7 @@ Visit our community website: ${siteUrl}`;
       }
 
       // Save all four required fields + submittedAt to contact_submissions
-      const contactSubmissionsRef = collection(db, 'contact_submissions');
+      const contactSubmissionsRef = collection(getDb(), 'contact_submissions');
       await addDoc(contactSubmissionsRef, {
         name: trimmedName,
         email: normalizedEmail,
@@ -370,18 +380,22 @@ Visit our community website: ${siteUrl}`;
     }
   });
 
-  // Vite middleware in dev mode; static serve in production
-  if (process.env.NODE_ENV !== 'production') {
+  // Serve static dist in production; Vite middleware in local development
+  const distPath = path.join(process.cwd(), 'dist');
+  const distIndexHtml = path.join(distPath, 'index.html');
+  const isProduction = process.env.NODE_ENV === 'production' || fs.existsSync(distIndexHtml);
+
+  if (!isProduction) {
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
     app.get('*', (_req: Request, res: Response) => {
-      res.sendFile(path.join(distPath, 'index.html'));
+      res.sendFile(distIndexHtml);
     });
   }
 
